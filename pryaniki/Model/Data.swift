@@ -15,12 +15,12 @@ struct Data{
         self.elements = json["data"].arrayValue.map{
             switch ViewDescription(rawValue: $0["name"].stringValue){
             case .hz:
-                return Headline(viewDescription: .hz, text: $0["data"].stringValue)
+                return Headline(viewDescription: .hz, text: $0["data"]["text"].stringValue)
             case .picture:
                 return Picture(viewDescription: .picture, PictureImage: PictureImage(url: URL(string: $0["data"]["url"].stringValue)!, text: $0["data"]["text"].stringValue))
             case .selector:
                 var variants: [Variant] = []
-                for index in 0...$0["data"]["variants"].count{
+                for index in 0...$0["data"]["variants"].count - 1{
                     variants.append(Variant(id: $0["data"]["variants"][index]["id"].intValue, text: $0["data"]["variants"][index]["text"].stringValue))
                 }
                 return Selector(viewDescription: .selector, selectedId: $0["data"]["selectedId"].intValue, variants: variants)

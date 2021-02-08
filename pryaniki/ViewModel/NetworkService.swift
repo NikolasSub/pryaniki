@@ -10,23 +10,15 @@ import Alamofire
 import SwiftyJSON
 
 final class NetworkService{
-    var data: Data?
-    var viewData: ViewData?
     private let url: String = "https://pryaniky.com/static/json/sample.json"
     
-    public func getData() {
-        AF.request(url, method: .get, parameters: nil).validate().responseJSON(completionHandler: { [self] response in
+    public func getData(callback: @escaping (Model) -> Void) {
+        AF.request(url, method: .get, parameters: nil).validate().responseJSON(completionHandler: {  response in
             switch response.result{
             case .success(let value):
                 let json = JSON(value)
-                if self.data == nil{
-                    self.data = Data(json: json)
-                    print(self.data)
-                }
-                if self.viewData == nil{
-                    self.viewData = ViewData(json: json)
-                    print(self.viewData)
-                }
+                let model = Model(json: json)
+                callback(model)
             case .failure(let error):
                 print(error.localizedDescription)
             }
